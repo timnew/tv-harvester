@@ -2,17 +2,9 @@ defmodule Monitor do
   @moduledoc """
   Documentation for Monitor.
   """
+  use GenServer
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Monitor.hello
-      :world
-
-  """
-  def hello do
-    :world
+  def start_link do
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 end
