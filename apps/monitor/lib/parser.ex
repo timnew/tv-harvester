@@ -12,21 +12,20 @@ defmodule Parser do
 
     iex> Parser.extract_episode_info("HR-HDTV.AC3.1024X576.x264.mkv")
     nil
+
+    iex> Parser.extract_episode_info("S03.HR-HDTV.AC3.1024X576.x264.mkv")
+    nil
   """
   def extract_episode_info(text) do
-    season_info = case Regex.run(~r/s(\d+)/ui, text) do
-                    [_, season] -> [season: String.to_integer(season)]
-                    _ -> []
-                  end
+    matched = Regex.run(~r/(s(?<season>\d+))?e(?<episode>\d+)/ui, text, capture: :all_names)
+    # with capture: all_names
+    # matches are sorted by name in alphabetic order instead of capture order
+    # so captured pattern is [episode, season] instead of [season, episode]
 
-    episode_info = case Regex.run(~r/e(\d+)/ui, text) do
-                     [_, episode] -> [episode: String.to_integer(episode)]
-                     _ -> []
-                   end
-
-    case season_info ++ episode_info do
-      [] -> nil
-      result -> result
+    case matched do
+      [episode, season] when season == "" -> [episode: String.to_integer(episode)]
+      [episode, season] when season != "" and episode != "" -> [season: String.to_integer(season), episode: String.to_integer(episode)]
+      _ -> nil
     end
   end
 
