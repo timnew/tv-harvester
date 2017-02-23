@@ -11,8 +11,8 @@ defmodule Monitor.Application do
     HTTPoison.start
 
     children = [
-      worker(Monitor, [])
-      worker(Downloader, [])
+      supervisor(Scraper, []),
+      supervisor(Parser, [])
     ]
 
     opts = [strategy: :one_for_one, name: Monitor.Supervisor]
