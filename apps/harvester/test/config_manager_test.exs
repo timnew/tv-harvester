@@ -6,7 +6,7 @@ defmodule ConfigManagerTest do
   import ConfigManager
 
   setup do
-    ConfigManager.start_link("redis://192.168.1.2:6379/15")
+    ConfigManager.start_link("redis://localshot:6379/15")
 
     on_exit fn ->
       command!(:flushdb)
@@ -33,5 +33,5 @@ defmodule ConfigManagerTest do
     assert get_struct(ConfigManagerTest, ConfigManagerTest) == %ConfigManagerTest{a: "1", b: "2", c: "3"}
   end
 
-  doctest ConfigManager, import: true, only: [normalize_key: 1]
+  doctest ConfigManager, import: true
 end

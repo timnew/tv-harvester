@@ -21,6 +21,15 @@ defmodule ConfigManager do
   def get_struct(key, struct_def), do: struct(struct_def, get_keyword(key))
 
   @doc """
+    iex> atomify_field(%{a: "x", b: "y"}, :a)
+    %{a: :x, b: "y"}
+  """
+  @spec atomify_field(map, atom) :: map
+  def atomify_field(map, key) when is_map(map) and is_atom(key)  do
+    Map.update!(map, key, &String.to_atom(&1))
+  end
+
+  @doc """
     iex> normalize_key(A.B.C)
     "A:B:C"
 
