@@ -33,5 +33,15 @@ defmodule ConfigManagerTest do
     assert get_struct(ConfigManagerTest, ConfigManagerTest) == %ConfigManagerTest{a: "1", b: "2", c: "3"}
   end
 
+  test "keys" do
+    key_list = ~w{ConfigManagerTest:a ConfigManagerTest:b ConfigManagerTest:c}
+
+    for key <- key_list, do: command!(:set, [key, key])
+
+    actual_keys = keys([ConfigManagerTest, "*"]) |> Enum.sort()
+
+    assert actual_keys == key_list
+  end
+
   doctest ConfigManager, import: true
 end

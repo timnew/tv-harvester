@@ -20,6 +20,10 @@ defmodule ConfigManager do
 
   def get_struct(key, struct_def), do: struct(struct_def, get_keyword(key))
 
+  def keys(key_pattern) do
+    command!(:keys, [normalize_key(key_pattern)])
+  end
+
   @doc """
     iex> atomify_field(%{a: "x", b: "y"}, :a)
     %{a: :x, b: "y"}
