@@ -21,16 +21,16 @@ defmodule ConfigManager do
   def get_struct(key, struct_def), do: struct(struct_def, get_keyword(key))
 
   @doc """
-    iex> ConfigManager.normalize_key(A.B.C)
+    iex> normalize_key(A.B.C)
     "A:B:C"
 
-    iex> ConfigManager.normalize_key("A:B:C")
+    iex> normalize_key("A:B:C")
     "A:B:C"
 
-    iex> ConfigManager.normalize_key([:a, :b, :c])
+    iex> normalize_key([:a, :b, :c])
     "a:b:c"
 
-    iex> ConfigManager.normalize_key([ConfigManager, :property])
+    iex> normalize_key([ConfigManager, :property])
     "ConfigManager:property"
   """
   def normalize_key(key)

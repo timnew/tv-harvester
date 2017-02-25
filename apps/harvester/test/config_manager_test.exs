@@ -33,5 +33,5 @@ defmodule ConfigManagerTest do
     assert get_struct(ConfigManagerTest, ConfigManagerTest) == %ConfigManagerTest{a: "1", b: "2", c: "3"}
   end
 
-  doctest ConfigManager
+  doctest ConfigManager, import: true, only: [normalize_key: 1]
 end
