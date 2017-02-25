@@ -3,11 +3,11 @@ defmodule ConfigManager do
   @type key_list :: nonempty_list(key)
 
   def start_link(connection_string) do
-    Redix.start_link(connection_string, name: ConfigManager)
+    Redix.start_link(connection_string, name: __MODULE__)
   end
 
   def command!(command, args \\ []) do
-    Redix.command!(ConfigManager, [Atom.to_string(command) | args])
+    Redix.command!(__MODULE__, [Atom.to_string(command) | args])
   end
 
   def get_keyword(key) do
