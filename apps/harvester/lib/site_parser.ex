@@ -1,6 +1,11 @@
 defmodule SiteParser do
   defstruct [:module, :method]
 
+  @type t :: %SiteParser{ module: module, method: atom }
+
+  @type host :: %{ host: String.t }
+              | %{ host: String.t, path: String.t }
+
   @doc """
     iex> parse_host("http://google.com/")
     {:ok, "google.com"}
@@ -20,6 +25,7 @@ defmodule SiteParser do
     iex> parse_host("")
     :error
   """
+  @spec parse_host(String.t) :: {:ok, host} | :error
   def parse_host(url) when is_bitstring(url) do
     case URI.parse(url) do
       %{host: host} when is_bitstring(host) -> {:ok, host}
@@ -41,22 +47,27 @@ defmodule SiteParser do
     iex> get_parser(%Show{id: :legion, name: "Legion", url: "http://www.kmeiju.net/archives/4998.html"})
     {:ok, %SiteParser{module: SiteParser, method: :parse_keiju}}
   """
+  @spec get_parser(Show.t | String.t) :: {:ok, t} | :error
   def get_parser(show_or_url_or_host)
 
+  @spec get_parser(Show.t) :: {:ok, t} | :error
   def get_parser(%{url: url}) do
     get_parser(url)
   end
 
+  @spec get_parser(String.t) :: {:ok, t} | :error
   def get_parser(url) when is_bitstring(url) do
     with {:ok, host} <- parse_host(url),
          {:ok, info} <- Map.fetch(site_parsers(), host),
       do: {:ok, build_struct(info)}
   end
 
+  @spec site_parsers() :: map
   defp site_parsers do
     Application.get_env(:harvester, :site_parsers)
   end
 
+  @spec build_struct({ module, atom }) :: t
   defp build_struct({ module, method }) do
     %SiteParser{module: module, method: method}
   end
