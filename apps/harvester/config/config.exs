@@ -32,6 +32,6 @@ use Mix.Config
 config :harvester,
   redis: "redis://192.168.1.2:6379/0",
   site_parsers: %{
-    "www.kmeiju.net" => { SiteParser, :parse_keiju },
-    "www.dysfz.net" => { SiteParser, :parse_dysfz }
+    "www.kmeiju.net" => { SiteParser.BuiltIn, :parse_keiju },
+    "www.dysfz.net" => { SiteParser.BuiltIn, :parse_dysfz }
   }

@@ -36,16 +36,16 @@ defmodule SiteParser do
 
   @doc """
     iex> get_parser("http://www.kmeiju.net/archives/4998.html")
-    {:ok, %SiteParser{module: SiteParser, method: :parse_keiju}}
+    {:ok, %SiteParser{module: SiteParser.BuiltIn, method: :parse_keiju}}
 
     iex> get_parser("www.kmeiju.net")
-    {:ok, %SiteParser{module: SiteParser, method: :parse_keiju}}
+    {:ok, %SiteParser{module: SiteParser.BuiltIn, method: :parse_keiju}}
 
     iex> get_parser("http://site_not_exists")
     :error
 
     iex> get_parser(%Show{id: :legion, name: "Legion", url: "http://www.kmeiju.net/archives/4998.html"})
-    {:ok, %SiteParser{module: SiteParser, method: :parse_keiju}}
+    {:ok, %SiteParser{module: SiteParser.BuiltIn, method: :parse_keiju}}
   """
   @spec get_parser(Show.t | String.t) :: {:ok, t} | :error
   def get_parser(show_or_url_or_host)
@@ -70,5 +70,16 @@ defmodule SiteParser do
   @spec build_struct({ module, atom }) :: t
   defp build_struct({ module, method }) do
     %SiteParser{module: module, method: method}
+  end
+
+  @spec parse(PageData.t) :: list(Episode.t)
+  def parse(page_data) do
+    with {:ok, parser} <- get_parser(page_data.show),
+     do: invoke_parser(parser, page_data)
+  end
+
+  @spec invoke_parser(t, PageData.t) :: list(Episode.t)
+  defp invoke_parser(parser, page_data) do
+    apply(parser.module, parser.method, page_data)
   end
 end
