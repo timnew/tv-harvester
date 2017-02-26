@@ -43,7 +43,8 @@ defmodule Harvester.Mixfile do
       {:redix, ">= 0.5.1"},
       {:httpoison, "~> 0.10.0"},
       {:floki, "~> 0.14.0"},
-      {:html5ever, "~> 0.2.0"}
+      {:html5ever, "~> 0.2.0"},
+      {:poison, "~> 3.1.0"}
     ]
   end
 end
