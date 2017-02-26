@@ -1,7 +1,7 @@
 defmodule SiteParser.BuiltIn do
   def build_entry(a) do
     title = Floki.text(a)
-    link = Floki.attribute(a, "href")
+    link = Floki.attribute(a, "href") |> List.first()
 
     %Episode{title: title, download_url: link}
   end
@@ -9,6 +9,7 @@ defmodule SiteParser.BuiltIn do
   def filter_attr(element, attr, filter) do
     element
     |> Floki.attribute(attr)
+    |> List.first()
     |> filter.()
   end
 

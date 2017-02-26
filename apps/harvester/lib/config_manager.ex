@@ -57,7 +57,7 @@ defmodule ConfigManager do
   def normalize_key(key)
 
   @spec normalize_key(String.t) :: String.t
-  def normalize_key(key) when is_bitstring(key), do: key
+  def normalize_key(key) when is_binary(key), do: key
 
   @spec normalize_key(atom) :: String.t
   def normalize_key(key) when is_atom(key) do

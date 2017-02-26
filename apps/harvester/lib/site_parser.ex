@@ -26,10 +26,10 @@ defmodule SiteParser do
     :error
   """
   @spec parse_host(String.t) :: {:ok, host} | :error
-  def parse_host(url) when is_bitstring(url) do
+  def parse_host(url) when is_binary(url) do
     case URI.parse(url) do
-      %{host: host} when is_bitstring(host) -> {:ok, host}
-      %{host: host, path: path } when is_nil(host) and is_bitstring(path) -> {:ok, path}
+      %{host: host} when is_binary(host) -> {:ok, host}
+      %{host: host, path: path } when is_nil(host) and is_binary(path) -> {:ok, path}
       _ -> :error
     end
   end
@@ -56,7 +56,7 @@ defmodule SiteParser do
   end
 
   @spec get_parser(String.t) :: {:ok, t} | :error
-  def get_parser(url) when is_bitstring(url) do
+  def get_parser(url) when is_binary(url) do
     with {:ok, host} <- parse_host(url),
          {:ok, info} <- Map.fetch(site_parsers(), host),
       do: {:ok, build_struct(info)}
@@ -80,6 +80,6 @@ defmodule SiteParser do
 
   @spec invoke_parser(t, PageData.t) :: list(Episode.t)
   defp invoke_parser(parser, page_data) do
-    apply(parser.module, parser.method, page_data)
+    apply(parser.module, parser.method, [page_data])
   end
 end

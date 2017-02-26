@@ -54,8 +54,10 @@ defmodule PageData do
   @spec fetch(Show.t) :: fetch_response
   def fetch(%{url: url} = show) do
     with {:ok, type, raw_body} <- do_fetch(url),
-     do: parse_content(type, show, raw_body)
+     do: parse_content(show, type, raw_body)
   end
+
+  defp content_type_filter({ header, _value }), do: header == "Content-Type"
 
   @typep do_fetch_result :: {:ok, mime_type, String.t}
                           | http_error
@@ -73,9 +75,6 @@ defmodule PageData do
       error -> {:error, error}
     end
   end
-
-  defp content_type_filter([header, _value]), do: header == "Content-Type"
-
 
   @doc """
     iex> parse_mime("application/json")
