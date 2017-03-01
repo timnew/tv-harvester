@@ -44,7 +44,8 @@ defmodule Harvester.Mixfile do
       {:httpoison, "~> 0.10.0"},
       {:floki, "~> 0.14.0"},
       {:html5ever, "~> 0.2.0"},
-      {:poison, "~> 3.1.0"}
+      {:poison, "~> 3.1.0"},
+      {:timex, "~> 3.1.13"}
     ]
   end
 end
