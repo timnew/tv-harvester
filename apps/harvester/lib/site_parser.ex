@@ -44,7 +44,7 @@ defmodule SiteParser do
     iex> get_parser("http://site_not_exists")
     :error
 
-    iex> get_parser(%Show{id: :legion, name: "Legion", url: "http://www.kmeiju.net/archives/4998.html"})
+    iex> get_parser(%Show{name: "Legion", url: "http://www.kmeiju.net/archives/4998.html"})
     {:ok, %SiteParser{module: SiteParser.BuiltIn, method: :parse_keiju}}
   """
   @spec get_parser(Show.t | String.t) :: {:ok, t} | :error
