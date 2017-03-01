@@ -53,4 +53,39 @@ defmodule Episode do
   def parse_episode_title(%Episode{title: title} = episode) do
     struct(episode, parse_title(title))
   end
+
+  @spec episode_key(t) :: ConfigManager.key
+  def episode_key(episode) do
+    [Episode, episode.show.id, episode.season, episode.episdoe]
+  end
+
+  @spec new?(t) :: boolean
+  def new?(episode) do
+    episode
+    |> episode_key()
+    |> ConfigManager.exists?()
+    |> Kernel.not()
+  end
+
+  def visit(episode) do
+    if new?(episode) do
+      store_episode(
+        episode,
+        show: episode.show.name,
+        title: episode.title,
+        seaon: episode.season,
+        episode: episode.episode,
+        page: episode.show.url,
+        download_url: episode.download_url,
+        found_at: Timex.now()
+      )
+      ConfigManager.enqueue(:new_episode)
+    end
+  end
+
+  def store_episode(episode, value) do
+    episode
+    |> episode_key()
+    |> ConfigManager.put_hash(value)
+  end
 end
