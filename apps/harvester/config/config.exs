@@ -30,7 +30,7 @@ use Mix.Config
 #     import_config "#{Mix.env}.exs"
 
 config :harvester,
-  redis: "redis://192.168.1.2:6379/0",
+  redis: "redis://localhost:6379/0",
   site_parsers: %{
     "www.kmeiju.net" => { SiteParser.BuiltIn, :parse_keiju },
     "www.dysfz.net" => { SiteParser.BuiltIn, :parse_dysfz }
