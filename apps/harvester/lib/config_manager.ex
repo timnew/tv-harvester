@@ -2,6 +2,15 @@ defmodule ConfigManager do
   @type key :: atom | String.t | key_list
   @type key_list :: nonempty_list(key)
 
+  @type value :: atom
+               | String.t
+               | number
+               | boolean
+               | tuple
+               | list
+               | map
+               | struct
+
   @spec start_link(String.t) :: GenServer.on_start
   def start_link(connection_string) do
     Redix.start_link(connection_string, name: __MODULE__)
@@ -25,6 +34,18 @@ defmodule ConfigManager do
 
   @spec get_struct(key, struct | module) :: struct
   def get_struct(key, struct_def), do: struct(struct_def, get_keyword(key))
+
+  @doc """
+    iex> put_hash(:test, [a: "x", b: "y"])
+    :ok
+    iex> get_keyword(:test)
+    [a: "x", b: "y"]
+  """
+  @spec put_hash(key, value) :: :ok
+  def put_hash(key, value) do
+    "OK" = command!(:hmset, [normalize_key(key)] ++ format_value(value))
+    :ok
+  end
 
   @doc """
     iex> format_value :test
@@ -53,32 +74,53 @@ defmodule ConfigManager do
     iex> format_value %{a: 1, b: 2}
     ["a", "1", "b", "2"]
   """
+  @spec format_value(value) :: String.t | list(String.t)
   def format_value(value)
 
+  @spec format_value(tuple) :: list(String.t)
   def format_value(tuple) when is_tuple(tuple), do:
     tuple
     |> Tuple.to_list()
     |> Enum.map(&format_value(&1))
 
+  @spec format_value(list | map) :: list(String.t)
   def format_value(enumerable) when is_list(enumerable) or is_map(enumerable) , do:
     enumerable
     |> Enum.map(&format_value(&1))
     |> List.flatten()
 
+  @spec format_value(atom) :: String.t
   def format_value(atom) when is_atom(atom), do:
     atom
     |> Atom.to_string()
 
+  @spec format_value(integer) :: String.t
   def format_value(integer) when is_integer(integer), do:
     integer
     |> Integer.to_string()
 
+  @spec format_value(float) :: String.t
   def format_value(float) when is_float(float), do:
     float
     |> Float.to_string()
 
+  @spec format_value(String.t) :: String.t
   def format_value(binary) when is_binary(binary), do:
     binary
+
+  @doc """
+    iex> exists?(:test)
+    false
+    iex> command!(:set, ~w(test value))
+    "OK"
+    iex> exists?(:test)
+    true
+  """
+  @spec exists?(key) :: boolean
+  def exists?(key) do
+    command!(:exists, [normalize_key(key)])
+    |> Kernel.>(0)
+  end
 
   @spec keys(key) :: list(String.t)
   def keys(key_pattern) do
