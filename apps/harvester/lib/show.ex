@@ -5,7 +5,7 @@ defmodule Show do
   @type t :: %Show{id: atom, name: String.t, url: String.t}
 
   @spec get_show(atom) :: t
-  def get_show(id) when is_atom(id), do: do_get_show([:show, id])
+  def get_show(id) when is_atom(id), do: do_get_show([Show, id])
 
   @spec do_get_show(ConfigManager.key_list) :: t
   defp do_get_show(key) do
@@ -15,7 +15,7 @@ defmodule Show do
 
   @spec get_all_shows() :: list(t)
   def get_all_shows() do
-    ConfigManager.keys([:show, "*"])
+    ConfigManager.keys([Show, "*"])
     |> Enum.map(&do_get_show(&1))
   end
 end
