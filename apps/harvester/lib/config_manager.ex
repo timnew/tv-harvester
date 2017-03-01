@@ -26,6 +26,60 @@ defmodule ConfigManager do
   @spec get_struct(key, struct | module) :: struct
   def get_struct(key, struct_def), do: struct(struct_def, get_keyword(key))
 
+  @doc """
+    iex> format_value :test
+    "test"
+
+    iex> format_value "test"
+    "test"
+
+    iex> format_value 1
+    "1"
+
+    iex> format_value 1.1
+    "1.1"
+
+    iex> format_value true
+    "true"
+    iex> format_value false
+    "false"
+
+    iex> format_value [1, 2, 3, 4]
+    ["1", "2", "3", "4"]
+
+    iex> format_value [a: 1, b: 2]
+    ["a", "1", "b", "2"]
+
+    iex> format_value %{a: 1, b: 2}
+    ["a", "1", "b", "2"]
+  """
+  def format_value(value)
+
+  def format_value(tuple) when is_tuple(tuple), do:
+    tuple
+    |> Tuple.to_list()
+    |> Enum.map(&format_value(&1))
+
+  def format_value(enumerable) when is_list(enumerable) or is_map(enumerable) , do:
+    enumerable
+    |> Enum.map(&format_value(&1))
+    |> List.flatten()
+
+  def format_value(atom) when is_atom(atom), do:
+    atom
+    |> Atom.to_string()
+
+  def format_value(integer) when is_integer(integer), do:
+    integer
+    |> Integer.to_string()
+
+  def format_value(float) when is_float(float), do:
+    float
+    |> Float.to_string()
+
+  def format_value(binary) when is_binary(binary), do:
+    binary
+
   @spec keys(key) :: list(String.t)
   def keys(key_pattern) do
     command!(:keys, [normalize_key(key_pattern)])
