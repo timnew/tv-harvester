@@ -34,4 +34,5 @@ config :harvester,
   site_parsers: %{
     "www.kmeiju.net" => { SiteParser.BuiltIn, :parse_keiju },
     "www.dysfz.net" => { SiteParser.BuiltIn, :parse_dysfz }
-  }
+  },
+  time_zone: "Australia/Melbourne"

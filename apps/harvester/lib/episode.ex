@@ -54,9 +54,14 @@ defmodule Episode do
     struct(episode, parse_title(title))
   end
 
+  @doc """
+    iex> episode_key(%Episode{show: %Show{name: "Flash"}, season: 2, episode: 1})
+    "Episode:Flash:2:1"
+  """
   @spec episode_key(t) :: ConfigManager.key
   def episode_key(episode) do
-    [Episode, episode.show.id, episode.season, episode.episdoe]
+    [Episode, episode.show.name, episode.season, episode.episode]
+    |> ConfigManager.normalize_key()
   end
 
   @spec new?(t) :: boolean
@@ -67,25 +72,47 @@ defmodule Episode do
     |> Kernel.not()
   end
 
+  @spec visit(t) :: non_neg_integer | :noop
   def visit(episode) do
     if new?(episode) do
-      store_episode(
-        episode,
-        show: episode.show.name,
-        title: episode.title,
-        seaon: episode.season,
-        episode: episode.episode,
-        page: episode.show.url,
-        download_url: episode.download_url,
-        found_at: Timex.now()
-      )
-      ConfigManager.enqueue(:new_episode)
+      store_episode(episode)
+      enqueue_daily_task(Timex.now(Application.get_env(:harvester, :time_zone)), [:episode, :new], [days: 7], episode)
+    else
+      :noop
     end
   end
 
+  @spec store_episode(t, list | map) :: :ok
   def store_episode(episode, value) do
     episode
     |> episode_key()
     |> ConfigManager.put_hash(value)
+  end
+
+  @spec store_episode(t) :: :ok
+  def store_episode(episode) do
+    store_episode(episode,
+      show: episode.show.name,
+      title: episode.title,
+      season: episode.season,
+      episode: episode.episode,
+      page: episode.show.url,
+      download_url: episode.download_url
+    )
+  end
+
+  @spec enqueue_daily_task(Timex.datetime, ConfigManager.key, Timex.shift_options, ConfigManager.value) :: non_neg_integer
+  def enqueue_daily_task(datetime, prefix, shift, episode) do
+    end_of_day = datetime |> Timex.end_of_day()
+
+    key = List.wrap(prefix) ++ [end_of_day |> Timex.to_date() |> Date.to_string()]
+    count = ConfigManager.enqueue(key, episode_key(episode))
+
+    expire_at = end_of_day |> Timex.shift(shift)
+    ConfigManager.expire_at(key, expire_at)
+
+    store_episode(episode, [enqueued_at: datetime |> Timex.format!("{ISO:Extended}")])
+
+    count
   end
 end

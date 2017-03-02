@@ -128,15 +128,6 @@ defmodule ConfigManager do
   end
 
   @doc """
-    iex> atomify_field(%{a: "x", b: "y"}, :a)
-    %{a: :x, b: "y"}
-  """
-  @spec atomify_field(map, atom) :: map
-  def atomify_field(map, key) when is_map(map) and is_atom(key)  do
-    Map.update!(map, key, &String.to_atom(&1))
-  end
-
-  @doc """
     iex> normalize_key(A.B.C)
     "A:B:C"
 
@@ -163,10 +154,29 @@ defmodule ConfigManager do
     |> String.replace(".", ":")
   end
 
+  @spec normalize_key(integer) :: String.t
+  def normalize_key(key) when is_integer(key) do
+    key
+    |> Integer.to_string()
+  end
+
   @spec normalize_key(key_list) :: String.t
   def normalize_key(key) when is_list(key) do
     key
     |> Stream.map(&normalize_key(&1))
     |> Enum.join(":")
+  end
+
+  @spec enqueue(key, value) :: non_neg_integer
+  def enqueue(queue_name, value) do
+    command!(:lpush, [normalize_key(queue_name), format_value(value)])
+  end
+
+  @spec expire_at(key, Timex.datetime) :: :ok | :error
+  def expire_at(key, datetime) do
+    case command!(:expireat, [normalize_key(key), datetime |> Timex.to_unix() |> format_value()]) do
+      1 -> :ok
+      0 -> :error
+    end
   end
 end
