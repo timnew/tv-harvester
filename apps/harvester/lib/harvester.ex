@@ -1,9 +1,9 @@
 defmodule Harvester do
   use Application
 
-  def start(_type, :setup) do
-    require Logger
+  require Logger
 
+  def start(_type, :setup) do
     Logger.info("App started in Setup mode...")
 
     import Supervisor.Spec, warn: false
@@ -20,6 +20,8 @@ defmodule Harvester do
   end
 
   def start(_type, _args) do
+    Logger.info("App start in executing mode...")
+    
     import Supervisor.Spec, warn: false
 
     HTTPoison.start
