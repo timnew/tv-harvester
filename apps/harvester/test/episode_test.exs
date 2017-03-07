@@ -2,7 +2,7 @@ defmodule EpisodeTest do
   use ExUnit.Case
   import Episode
 
-  setup_all(context) do
+  setup_all do
     show = %Show{name: "Flash", url: "https://coolsite"}
 
     episode = %Episode{
