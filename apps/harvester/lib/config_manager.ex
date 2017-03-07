@@ -127,6 +127,17 @@ defmodule ConfigManager do
     command!(:keys, [normalize_key(key_pattern)])
   end
 
+  @spec delete(key) :: boolean
+  def delete(key) do
+    command!(:del, [normalize_key(key)]) == 1
+  end
+
+  @spec delete_all(list(String.t)) :: non_neg_integer
+  def delete_all(keys) do
+    command!(:del, keys)
+  end
+
+
   @doc """
     iex> normalize_key(A.B.C)
     "A:B:C"

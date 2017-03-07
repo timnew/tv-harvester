@@ -43,5 +43,28 @@ defmodule ConfigManagerTest do
     assert actual_keys == key_list
   end
 
+  test "delete" do
+    command!(:set, ~w(ConfigMangerTest:a:b 123))
+
+    assert keys(["*"]) == ["ConfigMangerTest:a:b"]
+
+    assert delete([ConfigMangerTest, :a, :b]) == true
+
+    assert keys(["*"]) == []
+  end
+
+  test "delete_all" do
+    command!(:set, ~w(ConfigManager:a:b 123))
+    command!(:set, ~w(ConfigMangerTest:a:b 123))
+    command!(:set, ~w(ConfigMangerTest:x 123))
+    command!(:set, ~w(ConfigMangerTest:y 123))
+
+    assert length(keys(["*"])) == 4
+
+    assert delete_all(keys([ConfigMangerTest, "*"])) == 3
+
+    assert keys(["*"]) == ["ConfigManager:a:b"]
+  end
+
   doctest ConfigManager, import: true
 end
