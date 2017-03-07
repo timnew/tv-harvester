@@ -7,6 +7,8 @@ defmodule Mix.Tasks.Setup.Show do
   def run(_) do
     Mix.Task.run "run"
 
+    delete_all_shows()
+
     create_show("Flash", "http://www.dysfz.net/movie5156.html")
     create_show("Legends of Tomorrow", "http://www.dysfz.net/movie8896.html")
     create_show("Agents of SHIELD", "http://www.dysfz.net/movie4850.html")
