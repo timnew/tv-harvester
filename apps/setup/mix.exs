@@ -37,6 +37,8 @@ defmodule Setup.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:harvester, in_umbrella: true}
+    ]
   end
 end
