@@ -21,7 +21,7 @@ defmodule Harvester.Mixfile do
     # Specify extra applications you'll use from Erlang/Elixir
     [
       extra_applications: [:logger],
-      mod: {Harvester, []}
+      mod: {Harvester, Mix.env}
     ]
   end
 
