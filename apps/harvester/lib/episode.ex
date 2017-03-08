@@ -76,7 +76,7 @@ defmodule Episode do
   def visit(episode) do
     if new?(episode) do
       store_episode(episode)
-      enqueue_daily_task(Timex.now(Application.get_env(:harvester, :time_zone)), [:episode, :new], [days: 7], episode)
+      enqueue_daily_task(episode, Timex.now(Application.get_env(:harvester, :time_zone)), [:episode, :new], [days: 7])
     else
       :noop
     end
@@ -102,7 +102,7 @@ defmodule Episode do
   end
 
   @spec enqueue_daily_task(Timex.datetime, ConfigManager.key, Timex.shift_options, ConfigManager.value) :: non_neg_integer
-  def enqueue_daily_task(datetime, prefix, shift, episode) do
+  def enqueue_daily_task(episode, datetime, prefix, shift) do
     end_of_day = datetime |> Timex.end_of_day()
 
     key = List.wrap(prefix) ++ [end_of_day |> Timex.to_date() |> Date.to_string()]

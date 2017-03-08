@@ -58,7 +58,7 @@ defmodule EpisodeTest do
     now = Timex.now("Australia/Melbourne")
     date = now |> Timex.to_date() |> Date.to_string()
 
-    assert enqueue_daily_task(now, :test_queue, [days: 3], episode) == 1
+    assert enqueue_daily_task(episode, now, :test_queue, [days: 3]) == 1
 
     assert ConfigManager.command!(:lrange, ~w(test_queue:#{date} 0 -1)) == ["Episode:Flash:2:1"]
     # expire_at will aligned to end of the day
