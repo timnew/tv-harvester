@@ -21,7 +21,7 @@ defmodule Stage.ShowProvider do
   end
 
   def handle_call(:refresh, _, _) do
-    {:noreply, [], reset_state()}
+    {:reply, :ok, [], reset_state()}
   end
 
   defp reset_state do

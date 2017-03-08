@@ -28,8 +28,8 @@ defmodule Harvester do
 
     children = [
       worker(ConfigManager, [Application.get_env(:harvester, :redis)]),
+
       worker(Stage.ShowProvider, []),
-      worker(Stage.EpisodeExtractor, []),
       worker(Stage.EpisodeExtractor, []),
       worker(Stage.EpisodeBuffer, []),
       worker(Stage.EpisodeProcessor, [])

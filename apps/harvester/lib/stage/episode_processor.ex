@@ -1,8 +1,8 @@
 defmodule Stage.EpisodeProcessor do
-  use GenStage.ConsumerSupervisor
+  use ConsumerSupervisor
 
   def start_link() do
-    GenStage.ConsumerSupervisor.start_link(__MODULE__, nil)
+    ConsumerSupervisor.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def init(nil) do

@@ -5,7 +5,7 @@ defmodule Stage.EpisodeBuffer do
     GenStage.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
-  def init do
+  def init(nil) do
     {:producer_consumer, nil}
   end
 
@@ -13,7 +13,7 @@ defmodule Stage.EpisodeBuffer do
     GenStage.cast(__MODULE__, {:put, episodes})
   end
 
-  def handle_cast({:put, episodes}, queue) do
+  def handle_cast({:put, episodes}, _state) do
     {:noreply, [episodes], nil}
   end
 
