@@ -64,6 +64,8 @@ defmodule ConfigManagerTest do
     assert delete_all(keys([ConfigMangerTest, "*"])) == 3
 
     assert keys(["*"]) == ["ConfigManager:a:b"]
+
+    assert delete_all([]) == 0
   end
 
   doctest ConfigManager, import: true

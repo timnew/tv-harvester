@@ -132,6 +132,12 @@ defmodule ConfigManager do
     command!(:del, [normalize_key(key)]) == 1
   end
 
+  def delete_all(keys)
+
+  @spec delete_all([]) :: 0
+  def delete_all([]) do
+    0
+  end
   @spec delete_all(list(String.t)) :: non_neg_integer
   def delete_all(keys) do
     command!(:del, keys)
