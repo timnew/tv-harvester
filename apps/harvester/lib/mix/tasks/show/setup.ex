@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Setup.Show do
+defmodule Mix.Tasks.Show.Setup do
   use Mix.Task
 
   import Show
