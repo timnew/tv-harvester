@@ -54,8 +54,18 @@ defmodule Episode do
   @doc """
     iex> episode_key(%Episode{show: %Show{name: "Flash"}, season: 2, episode: 1})
     "Episode:Flash:2:1"
+
+    iex> episode_key(%Episode{show: %Show{name: "Flash"}, season: nil, episode: 1})
+    "Episode:Flash:1"
   """
   @spec episode_key(t) :: ConfigManager.key
+  def episode_key(episode)
+
+  def episode_key(%Episode{episode: nil} = episode) do
+    [Episode, episode.show.name, episode.episode]
+    |> ConfigManager.normalize_key()
+  end
+
   def episode_key(episode) do
     [Episode, episode.show.name, episode.season, episode.episode]
     |> ConfigManager.normalize_key()

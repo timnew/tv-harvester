@@ -14,6 +14,7 @@ defmodule Mix.Tasks.Show.Scan do
     |> Stream.map(&PageData.fetch/1)
     |> Stream.map(&SiteParser.parse/1)
     |> Stream.flat_map(fn x -> x end)
-    |> Stream.each(&Episode.visit/1)
+    |> Stream.map(&Episode.visit/1)
+    |> Enum.each(&IO.puts/1)
   end
 end
