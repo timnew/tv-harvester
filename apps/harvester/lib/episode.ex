@@ -24,15 +24,12 @@ defmodule Episode do
   """
   @spec parse_title(String.t) :: keyword
   def parse_title(title) do
-    matched = Regex.run(~r/(s(?<season>\d+))?e(?<episode>\d+)/ui, title, capture: :all_names)
-    # with capture: all_names
-    # matches are sorted by name in alphabetic order instead of capture order
-    # so captured pattern is [episode, season] instead of [season, episode]
+    matched = Regex.named_captures(~r/(s(?<season>\d+))?e(?<episode>\d+)/ui, title)
 
     case matched do
-      [episode, season] when season == "" ->
+      %{"episode" => episode, "season" => ""} ->
         [episode: String.to_integer(episode)]
-      [episode, season] when season != "" and episode != "" ->
+      %{"episode" => episode, "season" => season} ->
         [season: String.to_integer(season), episode: String.to_integer(episode)]
       _ ->
         []
